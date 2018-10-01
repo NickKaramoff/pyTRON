@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/linux,macos,python,pycharm,windows
+# Created by https://www.gitignore.io/api/linux,macos,python,windows,pycharm+all
 
 ### Linux ###
 *~
@@ -44,7 +44,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-### PyCharm ###
+### PyCharm+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -112,16 +112,18 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### PyCharm Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+### PyCharm+all Patch ###
+# Ignores the whole .idea folder and all .iml files
+# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
+.idea/
 
-# Sonarlint plugin
-.idea/sonarlint
+# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -277,4 +279,4 @@ $RECYCLE.BIN/
 *.lnk
 
 
-# End of https://www.gitignore.io/api/linux,macos,python,pycharm,windows
+# End of https://www.gitignore.io/api/linux,macos,python,windows,pycharm+all
