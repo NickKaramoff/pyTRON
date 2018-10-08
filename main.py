@@ -26,6 +26,10 @@ fps = 60
 pygame.init()
 
 
+#
+# PLAYER
+#
+
 class Player:
     def __init__(self, x, y, direction, color):
         self.x = x  # player x coord
@@ -59,10 +63,9 @@ class Player:
             self.start_boost = time.time()
 
 
-def new_game():
-    new_p1 = Player(poz[0], poz[1], (2, 0), P1_COLOR)
-    new_p2 = Player(width - poz[0], poz[1], (-2, 0), P2_COLOR)
-    return new_p1, new_p2
+#
+# SETUP
+#
 
 
 # Options
@@ -72,16 +75,23 @@ font = pygame.font.Font(None, 72)
 boosts_font = pygame.font.Font(None, 36)
 clock = pygame.time.Clock()
 check_time = time.time()
-poz = [50, (height - offset) / 2]
+start_pos = [50, (height - offset) / 2]
+
+
+def new_game():
+    new_p1 = Player(start_pos[0], start_pos[1], (2, 0), P1_COLOR)
+    new_p2 = Player(width - start_pos[0], start_pos[1], (-2, 0), P2_COLOR)
+    return new_p1, new_p2
+
 
 # create players and add to list
 objects = list()
-path = list()
+tails = list()
 p1, p2 = new_game()
 objects.append(p1)
-path.append((p1.rect, '1'))
+tails.append((p1.rect, '1'))
 objects.append(p2)
-path.append((p2.rect, '2'))
+tails.append((p2.rect, '2'))
 
 player_score = [0, 0]  # current player score
 
@@ -92,6 +102,11 @@ walls = [pygame.Rect([0, offset, wall_size, height]),
 
 finish = False
 new = False
+
+
+#
+# GAME
+#
 
 while not finish:
     for event in pygame.event.get():
@@ -127,14 +142,14 @@ while not finish:
 
     screen.fill(BG_COLOR)
 
-    for wall in walls:
-        pygame.draw.rect(screen, (42, 42, 42), wall, 0)  # draws the walls
+    for tail_wall in walls:
+        pygame.draw.rect(screen, (42, 42, 42), tail_wall, 0)  # draws the walls
 
     for o in objects:
         if time.time() - o.start_boost >= 0.5:  # limits boost to 0.5s
             o.boost = False
 
-        if (o.rect, '1') in path or (o.rect, '2') in path \
+        if (o.rect, '1') in tails or (o.rect, '2') in tails \
                 or o.rect.collidelist(walls) > -1:
 
             if (time.time() - check_time) >= 0.1:
@@ -146,25 +161,25 @@ while not finish:
                 new = True
                 p1, p2 = new_game()
                 objects = [p1, p2]
-                path = [(p1.rect, '1'), (p2.rect, '2')]
+                tails = [(p1.rect, '1'), (p2.rect, '2')]
                 break
 
         else:  # not yet traversed
-            path.append(
-                (o.rect, '1')) if o.color == P1_COLOR else path.append(
-                (o.rect, '2'))
+            tails.append(
+                (o.rect, '1')) if o.color == P1_COLOR \
+                else tails.append((o.rect, '2'))
         o.__draw__()
         o.__move__()
 
-    for wall in path:
+    for tail_wall in tails:
         if new is True:
-            path = []
+            tails = []
             new = False
             break
-        if wall[1] == '1':
-            pygame.draw.rect(screen, P1_COLOR, wall[0], 0)
+        if tail_wall[1] == '1':
+            pygame.draw.rect(screen, P1_COLOR, tail_wall[0], 0)
         else:
-            pygame.draw.rect(screen, P2_COLOR, wall[0], 0)
+            pygame.draw.rect(screen, P2_COLOR, tail_wall[0], 0)
 
     # if len(path) > 50:
     #     path.pop(0)
