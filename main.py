@@ -17,11 +17,11 @@ P2_COLOR = YELLOW  # player 2 trail color
 
 # Window
 
-width, height = 600, 660  # window dimensions
-offset = height - width  # vertical space at top of window
-wall_size = 15
-caption = "pyTRON"
-fps = 60
+WIDTH, HEIGHT = 600, 660  # window dimensions
+OFFSET = HEIGHT - WIDTH  # vertical space at top of window
+WALL_WIDTH = 15
+WINDOW_CAPTION = "pyTRON"
+GAME_FPS = 60
 
 pygame.init()
 
@@ -69,18 +69,18 @@ class Player:
 
 
 # Options
-screen = pygame.display.set_mode((width, height))  # creates window
-pygame.display.set_caption(caption)  # sets window title
-font = pygame.font.Font(None, 72)
-boosts_font = pygame.font.Font(None, 36)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))  # creates window
+pygame.display.set_caption(WINDOW_CAPTION)  # sets window title
+SCORE_FONT = pygame.font.Font(None, 72)
+BOOSTS_FONT = pygame.font.Font(None, 36)
 clock = pygame.time.Clock()
 check_time = time.time()
-start_pos = [50, (height - offset) / 2]
+start_pos = [50, (HEIGHT - OFFSET) / 2]
 
 
 def new_game():
     new_p1 = Player(start_pos[0], start_pos[1], (2, 0), P1_COLOR)
-    new_p2 = Player(width - start_pos[0], start_pos[1], (-2, 0), P2_COLOR)
+    new_p2 = Player(WIDTH - start_pos[0], start_pos[1], (-2, 0), P2_COLOR)
     return new_p1, new_p2
 
 
@@ -93,16 +93,15 @@ tails.append((p1.rect, '1'))
 objects.append(p2)
 tails.append((p2.rect, '2'))
 
-player_score = [0, 0]  # current player score
+players_score = [0, 0]  # current players score
 
-walls = [pygame.Rect([0, offset, wall_size, height]),
-         pygame.Rect([0, offset, width, wall_size]),
-         pygame.Rect([width - wall_size, offset, wall_size, height]),
-         pygame.Rect([0, height - wall_size, width, wall_size])]
+SCREEN_FRAME = [pygame.Rect([0, OFFSET, WALL_WIDTH, HEIGHT]),
+                pygame.Rect([0, OFFSET, WIDTH, WALL_WIDTH]),
+                pygame.Rect([WIDTH - WALL_WIDTH, OFFSET, WALL_WIDTH, HEIGHT]),
+                pygame.Rect([0, HEIGHT - WALL_WIDTH, WIDTH, WALL_WIDTH])]
 
 finish = False
 new = False
-
 
 #
 # GAME
@@ -142,7 +141,7 @@ while not finish:
 
     screen.fill(BG_COLOR)
 
-    for tail_wall in walls:
+    for tail_wall in SCREEN_FRAME:
         pygame.draw.rect(screen, (42, 42, 42), tail_wall, 0)  # draws the walls
 
     for o in objects:
@@ -150,14 +149,14 @@ while not finish:
             o.boost = False
 
         if (o.rect, '1') in tails or (o.rect, '2') in tails \
-                or o.rect.collidelist(walls) > -1:
+                or o.rect.collidelist(SCREEN_FRAME) > -1:
 
             if (time.time() - check_time) >= 0.1:
                 check_time = time.time()
                 if o.color == P1_COLOR:
-                    player_score[1] += 1
+                    players_score[1] += 1
                 else:
-                    player_score[0] += 1
+                    players_score[0] += 1
                 new = True
                 p1, p2 = new_game()
                 objects = [p1, p2]
@@ -184,32 +183,34 @@ while not finish:
     # if len(path) > 50:
     #     path.pop(0)
 
-    score_text = font.render(
-        '{0} : {1}'.format(player_score[0], player_score[1]), 1, (255, 255, 51))
+    score_text = SCORE_FONT.render('%d : %d' % (players_score[0],
+                                                players_score[1]),
+                                   1,
+                                   (255, 255, 51))
     score_text_pos = score_text.get_rect()
-    score_text_pos.centerx = int(width / 2)
-    score_text_pos.centery = int(offset / 2)
+    score_text_pos.centerx = int(WIDTH / 2)
+    score_text_pos.centery = int(OFFSET / 2)
     screen.blit(score_text, score_text_pos)
 
-    boosts_p1 = boosts_font.render("%d boosts" % objects[0].boosts, 1, P1_COLOR)
+    boosts_p1 = BOOSTS_FONT.render("%d boosts" % objects[0].boosts, 1, P1_COLOR)
     boosts_p1_pos = boosts_p1.get_rect()
-    boosts_p1_pos.centerx = int(boosts_p1.get_width() / 2) + wall_size + 10
+    boosts_p1_pos.centerx = int(boosts_p1.get_width() / 2) + WALL_WIDTH + 10
     boosts_p1_pos.centery = \
-        offset + int(boosts_p1.get_height() / 2) + wall_size + 10
+        OFFSET + int(boosts_p1.get_height() / 2) + WALL_WIDTH + 10
     screen.blit(boosts_p1, boosts_p1_pos)
 
-    boosts_p2 = boosts_font.render("%d boosts" % objects[1].boosts, 1, P2_COLOR)
+    boosts_p2 = BOOSTS_FONT.render("%d boosts" % objects[1].boosts, 1, P2_COLOR)
     boosts_p2_pos = boosts_p2.get_rect()
     boosts_p2_pos.centerx = \
-        width - int(boosts_p2.get_width() / 2) - wall_size - 10
+        WIDTH - int(boosts_p2.get_width() / 2) - WALL_WIDTH - 10
     boosts_p2_pos.centery = \
-        offset + int(boosts_p2.get_height() / 2) + wall_size + 10
+        OFFSET + int(boosts_p2.get_height() / 2) + WALL_WIDTH + 10
     screen.blit(boosts_p2, boosts_p2_pos)
 
-    if player_score[0] >= 10 or player_score[1] >= 10:
+    if players_score[0] >= 10 or players_score[1] >= 10:
         finish = True
 
     pygame.display.flip()
-    clock.tick(fps)
+    clock.tick(GAME_FPS)
 
 pygame.quit()
