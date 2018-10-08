@@ -19,6 +19,7 @@ P2_COLOR = YELLOW  # player 2 trail color
 
 width, height = 600, 660  # window dimensions
 offset = height - width  # vertical space at top of window
+wall_size = 15
 caption = "pyTRON"
 fps = 60
 
@@ -84,10 +85,10 @@ path.append((p2.rect, '2'))
 
 player_score = [0, 0]  # current player score
 
-walls = [pygame.Rect([0, offset, 15, height]),
-         pygame.Rect([0, offset, width, 15]),
-         pygame.Rect([width - 15, offset, 15, height]),
-         pygame.Rect([0, height - 15, width, 15])]
+walls = [pygame.Rect([0, offset, wall_size, height]),
+         pygame.Rect([0, offset, width, wall_size]),
+         pygame.Rect([width - wall_size, offset, wall_size, height]),
+         pygame.Rect([0, height - wall_size, width, wall_size])]
 
 finish = False
 new = False
@@ -177,14 +178,17 @@ while not finish:
 
     boosts_p1 = boosts_font.render("%d boosts" % objects[0].boosts, 1, P1_COLOR)
     boosts_p1_pos = boosts_p1.get_rect()
-    boosts_p1_pos.centerx = int(boosts_p1.get_width() / 2) + 25
-    boosts_p1_pos.centery = offset + int(boosts_p1.get_height() / 2) + 25
+    boosts_p1_pos.centerx = int(boosts_p1.get_width() / 2) + wall_size + 10
+    boosts_p1_pos.centery = \
+        offset + int(boosts_p1.get_height() / 2) + wall_size + 10
     screen.blit(boosts_p1, boosts_p1_pos)
 
     boosts_p2 = boosts_font.render("%d boosts" % objects[1].boosts, 1, P2_COLOR)
     boosts_p2_pos = boosts_p2.get_rect()
-    boosts_p2_pos.centerx = - int(boosts_p2.get_width() / 2) + width - 25
-    boosts_p2_pos.centery = offset + int(boosts_p2.get_height() / 2) + 25
+    boosts_p2_pos.centerx = \
+        width - int(boosts_p2.get_width() / 2) - wall_size - 10
+    boosts_p2_pos.centery = \
+        offset + int(boosts_p2.get_height() / 2) + wall_size + 10
     screen.blit(boosts_p2, boosts_p2_pos)
 
     if player_score[0] >= 10 or player_score[1] >= 10:
